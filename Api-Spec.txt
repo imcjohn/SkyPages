@@ -1,7 +1,7 @@
 Simple REST API, two call
 
 POST /api/upload_zip (to upload website from zip)
-PARAMS 
+PARAMS
 returns sia link
 
-POST /api/upload_pages 
+POST /api/upload_pages
