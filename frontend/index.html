@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <script>
+        // code to handle github
         let debounce = function(fun, mil){
             let timer;
             return function(){
@@ -20,7 +21,6 @@
                 }, mil);
             };
         };
-
         let checkUrl = function(url){
             if (!url.startsWith('https://'))
                 return 'Please use an https GitHub Pages URL';
@@ -31,16 +31,33 @@
             }
             return 'ok';
         };
-
-        let pi = function(){
+        let processBounced = function(){
             let url = document.getElementById("githubPage").value;
             let status = checkUrl(url);
             if (status != 'ok'){
                 bootbox.alert(status);
             }
+            let zipPromise = get_pages(url);
+            zipPromise.then(handleJZip);
         };
-
-        let processImport = debounce(pi,50);
+        let processImport = debounce(processBounced,50);
+        // code to handle zip
+        let handleZip = function(element){
+            let file = element.files[0];
+            if (!file.name.endsWith('.zip')){
+                bootbox.alert("Please select a zip file");
+            }
+            let prom = get_zip(element);
+            prom.then(handleJZip);
+        };
+        let handleJZip = function(zip){
+            let promResult = upload_zip(zip);
+            promResult.then(handleResult);
+        };
+        // general code
+        let handleResult = function(value){
+            // value contains value.skylink and value.other_skylinks
+        }
     </script>
 
     <!--
@@ -73,7 +90,7 @@
                 </h6>
 
                 <div class="custom-file overflow-hidden rounded-pill mb-5">
-                    <input id="customFile" type="file" class="custom-file-input rounded-pill">
+                    <input onchange="handleZip(this)" id="customFile" type="file" class="custom-file-input rounded-pill">
                     <label for="customFile" class="custom-file-label rounded-pill">Choose file</label>
                 </div>
                 <!-- End -->
