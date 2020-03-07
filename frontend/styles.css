@@ -1,0 +1,38 @@
+/*
+*
+* ==========================================
+* CUSTOM UTIL CLASSES
+* ==========================================
+*
+*/
+
+.file-upload input[type='file'] {
+    display: none;
+}
+
+/*
+*
+* ==========================================
+* FOR DEMO PURPOSES
+* ==========================================
+*
+*/
+
+body {
+    background: #00B4DB;
+    background: -webkit-linear-gradient(to right, #0083B0, #00B4DB);
+    background: linear-gradient(to right, #0083B0, #00B4DB);
+    height: 100vh;
+}
+
+.rounded-lg {
+    border-radius: 1rem;
+}
+
+.custom-file-label.rounded-pill {
+    border-radius: 50rem;
+}
+
+.custom-file-label.rounded-pill::after {
+    border-radius: 0 50rem 50rem 0;
+}
