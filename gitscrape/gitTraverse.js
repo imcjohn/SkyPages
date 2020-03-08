@@ -3,7 +3,6 @@ const allWithSrc = ['audio','embed','iframe','img','input','script','source','tr
 let domparser = new DOMParser();
 
 function toDom(htmlString){
-    console.log(htmlString);
     let dom = domparser.parseFromString(htmlString,'text/html');
     return dom;
 }
@@ -15,10 +14,13 @@ function toDom(htmlString){
  */
 
 function traverse(url){
+    let zip = new JSZip();
+    if (url[url.length-1] != '/')
+        url = url + '/'; // always end with fwd slash
     return fetch(url, {
         method: "GET"
     }).then(response => response.text())
-        .then(response => parseTraverse(toDom(response)));
+        .then(response => multiFetch(zip,parseTraverse(url,toDom(response)))).then(() => zip);
 }
 
 /**
@@ -26,14 +28,14 @@ function traverse(url){
  * @param htmlString string of html from website
  * @returns list of links in webpage
  */
-function parseTraverse(doc){
+function parseTraverse(url,doc){
     let urls = [];
     for (let href of allWithHref){
         let elements = doc.getElementsByTagName(href);
         for (let element of elements){
             let link = element.getAttribute('href');
             if (link && link.indexOf('http') == -1){
-                urls.push(link);
+                urls.push(url + link);
             }
         }
     }
@@ -43,9 +45,20 @@ function parseTraverse(doc){
         for (let element of elements){
             let link = element.getAttribute('src');
             if (link && link.indexOf('http') == -1){
-                urls.push(link);
+                urls.push(url + link);
             }
         }
     }
     return urls;
+}
+
+function multiFetch(zip,urls){
+    return Promise.all(urls.map(function(url) {
+        const filenameParts = url.split('/');
+        const filename = filenameParts[filenameParts.length-1];
+        return fetch(url, {
+            method: "GET"
+        }).then(response => response.blob()).then(blob => zip.file(filename,blob))
+    }
+    ));
 }
