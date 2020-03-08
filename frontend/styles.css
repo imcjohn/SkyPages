@@ -65,7 +65,7 @@ button {
     height: 64px;
     width: 64px;
     animation: rotate 0.8s infinite linear;
-    border: 5px solid firebrick;
+    border: 5px solid #00B4DB;
     border-right-color: transparent;
     border-radius: 50%;
 }
