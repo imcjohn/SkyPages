@@ -13,7 +13,7 @@ function toDom(htmlString){
  * @returns promise of a zip something something
  */
 
-function traverse(url){
+function get_pages(url){
     let zip = new JSZip();
     if (url[url.length-1] != '/')
         url = url + '/'; // always end with fwd slash
