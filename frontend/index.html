@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="load.css">
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.2.2/jszip.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src = "bootbox.all.min.js"></script>
     <script src = "ziphandler.js"></script>
+    <script src = "gitTraverse.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -27,18 +30,12 @@
             if (!url.startsWith('https://'))
                 return 'Please use an https GitHub Pages URL';
             let chop = url.split('.');
-            console.log(chop);
             if (!(chop[1] == 'github' && chop[2].startsWith('io'))){
                 return 'Sorry, this only supports Github Pages. Please enter a proper GitHub pages URL';
             }
             return 'ok';
         };
         let processBounced = function(){
-            let result = {skylink : "eeb", other_skylinks : ["sk1","skylink two","skilthreee"]};
-            handleResult(result);
-            return;
-
-
             let url = document.getElementById("githubPage").value;
             let status = checkUrl(url);
             if (status != 'ok'){
@@ -56,15 +53,21 @@
                 bootbox.alert("Please select a zip file");
             }
             let zipPromise = (new JSZip()).loadAsync(file);
-            zipPromise.then(zip => handle_zip(zip)).then(handleResult);
+            zipPromise.then(handleJZip);
         };
         let handleJZip = function(zip){
+            zip.generateAsync({type:"blob"})
+                .then(function (blob) {
+                    saveAs(blob, "hello.zip");
+                });
+            $('#overlay').fadeIn();
             let promResult = handle_zip(zip);
             promResult.then(handleResult);
         };
         // general code
         let handleResult = function(value){
-            let other  = ''
+            $('#overlay').fadeOut();
+            let other  = '';
             let rawText = 'Primary Skylink: ' + value.skylink + '\nOther Skylinks:\n\t'
             for (var each of value.dependencies){
                 other = other + `<li><a href="${each}">${each}</a></li>`;
@@ -89,12 +92,20 @@
             </ol>
             <a download="skylinks.txt" href="data:application/octet-stream;base64,${b64}">Download skylinks as text</a>
             `;
-            bootbox.alert(result);
-        }
+            bootbox.alert({message: result,size:"large",callback:closePage});
+        };
+        let closePage = function(){
+            location.reload();
+        };
     </script>
 
 </head>
 <body>
+<div id="overlay" style="display:none;">
+    <div class="spinner"></div>
+    <br/>
+    Loading...
+</div>
 <section>
     <div class="container p-5">
         <!-- For demo purpose -->

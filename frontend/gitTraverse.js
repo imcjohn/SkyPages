@@ -20,7 +20,7 @@ function get_pages(url){
     return fetch(url, {
         method: "GET"
     }).then(response => response.text())
-        .then(response => multiFetch(zip,parseTraverse(url,toDom(response)))).then(() => zip);
+        .then(response => multiFetch(url,zip,parseTraverse(url,toDom(response)))).then(() => zip);
 }
 
 /**
@@ -35,7 +35,7 @@ function parseTraverse(url,doc){
         for (let element of elements){
             let link = element.getAttribute('href');
             if (link && link.indexOf('http') == -1){
-                urls.push(url + link);
+                urls.push(link);
             }
         }
     }
@@ -45,20 +45,23 @@ function parseTraverse(url,doc){
         for (let element of elements){
             let link = element.getAttribute('src');
             if (link && link.indexOf('http') == -1){
-                urls.push(url + link);
+                urls.push(link);
             }
         }
     }
+    urls.push('');
     return urls;
 }
 
-function multiFetch(zip,urls){
+function multiFetch(rootUrl,zip,urls){
     return Promise.all(urls.map(function(url) {
-        const filenameParts = url.split('/');
-        const filename = filenameParts[filenameParts.length-1];
-        return fetch(url, {
+        let filename = url;
+        if (filename == '')
+            filename = 'index.html';
+        return fetch(rootUrl + url, {
             method: "GET"
-        }).then(response => response.blob()).then(blob => zip.file(filename,blob))
+        }).then(response => response.blob()).then(
+            blob => zip.file(filename,blob))
     }
     ));
 }

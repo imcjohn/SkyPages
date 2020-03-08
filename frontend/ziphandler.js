@@ -1,12 +1,9 @@
-
-
 function handle_zip(zip) {
-    console.log(zip.files);
-    let html_files = Object.keys(zip.files).filter(file => file.endsWith(".html") && !file.includes("/"))
+    let html_files = Object.keys(zip.files).filter(file => file.endsWith(".html") && !file.includes("/"));
     if (html_files.length === 0) {
-        throw new Error("No HTML file in root directory");
+        return Promise.reject("No HTML file in root directory");
     } else if (html_files.length > 1) {
-        throw new Error("Too many HTML files in root directory");
+        return Promise.reject("Too many HTML files in root directory");
     }
     let html_file = html_files[0];
     let resources = Object.keys(zip.files)
@@ -16,7 +13,56 @@ function handle_zip(zip) {
             return obj;
         }, {});
 
+    let promises = [upload_resources(resources), get_dom(zip, html_file)];
+    return Promise.all(promises)
+        .then(arr => {
+            let [mapping, dom] = arr;
+            modify_html(dom, mapping);
+            let blob = new Blob([dom.documentElement.innerHTML], {type: "text/html"})
+            return upload(blob, "index.html")
+                .then(arr => {
+                    return {skylink: arr[1],
+                        dependencies: Object.values(mapping)};
+                })
+        })
+}
 
+function modify_html(dom, mapping) {
+    for (let e of dom.getElementsByTagName("*")) {
+        if (e.hasAttribute("src")) {
+            modify_element(e, mapping, "src")
+        } else if (e.hasAttribute("href")) {
+            modify_element(e, mapping, "href")
+        }
+    }
+    return dom;
+}
+
+function get_dom(zip, html_file) {
+    let parser = new DOMParser();
+    return zip.files[html_file].async("string").then(s => parser.parseFromString(s, "text/html"));
+}
+
+function absolute(relative) {
+    var stack = [],
+        parts = relative.split("/");
+    for (let part of parts) {
+        if (part === ".")
+            continue;
+        if (part === "..")
+            stack.pop();
+        else
+            stack.push(part);
+    }
+    return stack.join("/");
+}
+
+function modify_element(e, mapping, attribute) {
+    console.log(e + '_'+ mapping + '_' + attribute);
+    let ref = absolute(e.getAttribute(attribute));
+    if (ref in mapping) {
+        e.setAttribute(attribute, mapping[ref])
+    }
 }
 
 function mimetype_lookup(filename) {
@@ -43,12 +89,13 @@ function upload(blob, filename) {
         body: formData
     })
         .then(response => response.json())
-        .then(json => [filename, json["skylink"]]);
+        .then(json => [filename, `https://siasky.net/${json["skylink"]}`]);
 }
 
 function upload_resources(resources) {
     return Promise.all(Object.entries(resources).map(arr => {
         let [filename, f] = arr;
-        return f.async("blob").then(b => upload(b, filename))})).then(Object.fromEntries);
+        return f.async("blob").then(b => upload(b, filename))
+    })).then(Object.fromEntries);
 }
 
