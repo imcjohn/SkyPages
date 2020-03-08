@@ -17,11 +17,14 @@ function handle_zip(zip) {
     return Promise.all(promises)
         .then(arr => {
             let [mapping, dom] = arr;
-            return modify_html(dom, mapping);
+            modify_html(dom, mapping);
+            let blob = new Blob([dom.documentElement.innerHTML], {type: "text/html"})
+            return upload(blob, "index.html")
+                .then(arr => {
+                    return {skylink: arr[1],
+                        dependencies: Object.values(mapping)};
+                })
         })
-        .then(dom => new Blob([dom.documentElement.innerHTML], {type: "text/html"}))
-        .then(blob => upload(blob, "index.html"))
-        .then(arr => arr[1]);
 }
 
 function modify_html(dom, mapping) {
