@@ -14,3 +14,5 @@ We keep the references relative still, though, so that if we can access the webp
 
 TODO: 
 Mention dogfooding with our service, get link to our thingy. Make some screenshots/gifs of it in action.
+
+Linky here: https://siasky.net/CABMLShr4jkikvB15sd9cIP8LrfrmVePO24NzZE7lM5VTQ
