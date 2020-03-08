@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>SkyPages</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.2.2/jszip.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -13,7 +14,73 @@
     <script src="gitTraverse.js" async></script>
     <link rel="stylesheet" type="text/css"
           href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script>
+</head>
+<body>
+<div id="overlay" style="display:none;">
+    <div class="spinner"></div>
+    <br/>
+    Uploading...
+</div>
+<div id="container-fluid" class="container p-5">
+    <!-- For demo purpose -->
+    <div class="row mb-4 text-center text-white">
+        <div class="col-lg-12 mx-auto">
+            <!--                <img src="logo.png" width="50">-->
+            <h1 class="display-4">SkyPages</h1>
+            <p class="lead">Hosting your website in a secure, decentralized manner.</p>
+        </div>
+    </div>
+    <!-- End -->
+    <div class="row">
+    <div class="col-lg-5 mx-auto">
+        <div class="p-5 bg-white shadow rounded-lg">
+            <img src="upload.jpg" alt="" width="150" class="d-block mx-auto mb-4">
+
+            <!-- Default bootstrap file upload-->
+
+            <h6 class="text-center mb-4 text-muted">
+                Select zip folder to upload:
+            </h6>
+
+            <div class="custom-file overflow-hidden rounded-pill mb-5">
+                <input id="customFile" type="file"
+                       class="custom-file-input rounded-pill" accept=".zip">
+                <label for="customFile" class="custom-file-label rounded-pill">Choose file</label>
+            </div>
+            <!-- End -->
+
+            <img src="github_logo.png" alt="" width="150" class="d-block mx-auto mb-4 ">
+
+            <h6 class="text-center mb-4 text-muted">
+                Or import from GitHub pages:
+            </h6>
+
+            <form class="needs-validation" novalidate>
+                <div class="form-group">
+                    <input type="text" pattern="^https:\/\/[A-Za-z0-9\-]{1,61}\.github\.io\/.*$"
+                           class="form-control btn-block rounded-pill shadow" id="githubPage"
+                           placeholder="Enter Github Pages URL" required>
+                    <div class="invalid-feedback">
+                        Please enter an HTTPS github.io URL.
+                    </div>
+
+                    <!-- End -->
+                </div>
+                <button onclick="" type="submit" class="btn btn-primary btn-block rounded-pill shadow">
+                    Import
+                </button>
+            </form>
+
+        </div>
+    </div>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+        'use strict';
+
         // code to handle github
         function processImport() {
             let url = document.getElementById("githubPage").value;
@@ -65,85 +132,19 @@
             </ol>
             <a download="skylinks.txt" href="data:application/octet-stream;base64,${b64}">Download skylinks as text</a>
             `;
-            bootbox.alert({message: result, size: "large", callback: closePage});
+            bootbox.alert({message: result, size: "large"});
         };
-        let closePage = function () {
-            location.reload();
-        };
-    </script>
 
-</head>
-<body>
-<div id="overlay" style="display:none;">
-    <div class="spinner"></div>
-    <br/>
-    Uploading...
-</div>
-<section>
-    <div class="container p-5">
-        <!-- For demo purpose -->
-        <div class="row mb-5 text-center text-white">
-            <div class="col-lg-10 mx-auto">
-                <img src="logo.png" width="50">
-                <h1 class="display-4">SkyPages</h1>
-                <p class="lead">Hosting your website in a secure, decentralized manner.</p>
-            </div>
-        </div>
-        <!-- End -->
-
-        <div class="col-lg-5 mx-auto">
-            <div class="p-5 bg-white shadow rounded-lg">
-                <img src="upload.jpg" alt="" width="150" class="d-block mx-auto mb-4 rounded-pill">
-
-                <!-- Default bootstrap file upload-->
-
-                <h6 class="text-center mb-4">
-                    Select zip folder to upload:
-                </h6>
-
-                <div class="custom-file overflow-hidden rounded-pill mb-5">
-                    <input onchange="handleZip(this)" id="customFile" type="file"
-                           class="custom-file-input rounded-pill" accept=".zip">
-                    <label for="customFile" class="custom-file-label rounded-pill">Choose file</label>
-                </div>
-                <!-- End -->
-
-                <img src="github_PNG20.png" alt="" width="150" class="d-block mx-auto mb-4 ">
-
-                <h6 class="text-center mb-4 text-muted">
-                    Or import from GitHub pages:
-                </h6>
-
-                <form class="needs-validation" novalidate>
-                    <div class="form-group">
-                        <input type="text" pattern="^https:\/\/[A-Za-z0-9\-]{1,61}\.github\.io\/.*$"
-                               class="form-control btn-block rounded-pill shadow" id="githubPage"
-                               placeholder="Enter Github Pages URL" data-error="Before you wreck yourself" required>
-                        <div class="invalid-feedback">
-                            Please enter an HTTPS github.io URL.
-                        </div>
-
-                        <!-- End -->
-                    </div>
-                    <button onclick="" type="submit" class="btn btn-primary btn-block rounded-pill shadow">
-                        Import
-                    </button>
-                </form>
-
-            </div>
-        </div>
-
-    </div>
-</section>
-
-<script>
-    (function () {
-        'use strict';
         window.addEventListener('load', function () {
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.getElementsByClassName('needs-validation');
+            const forms = document.getElementsByClassName('needs-validation');
+            const upload = document.getElementById("customFile");
+
+            upload.addEventListener('change', function (event) {
+                handleZip(event.target);
+            });
             // Loop over them and prevent submission
-            var validation = Array.prototype.filter.call(forms, function (form) {
+            Array.prototype.filter.call(forms, function (form) {
                 form.addEventListener('submit', function (event) {
                     event.preventDefault();
                     event.stopPropagation();
