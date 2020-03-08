@@ -3,7 +3,7 @@ const DOWNLOAD_URL = "https://siasky.net/";
 
 
 /**
- * Uploads a zip file of a website to siasky.net.
+ * Uploads a zip file of a website to Siacoin's Skynet.
  *
  * @param {{files: Object.<string, ZipObject>}} zip file of a single page website and its resources
  * @returns {Promise<never>|Promise<{skylink: string, dependencies: [string]}>} list
