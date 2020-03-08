@@ -13,4 +13,4 @@ We keep the references relative still, though, so that if we can access the webp
 ### Why it's cool
 
 TODO: 
-Mention dogfooding with our service
+Mention dogfooding with our service, get link to our thingy. Make some screenshots/gifs of it in action.
