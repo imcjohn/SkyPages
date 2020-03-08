@@ -86,7 +86,7 @@
             <div class="col-lg-10 mx-auto">
                 <img src="logo.png" width="50">
                 <h1 class="display-4">SkyPages</h1>
-                <p class="lead">Hosting your website in a secure, decentralized manner</p>
+                <p class="lead">Hosting your website in a secure, decentralized manner.</p>
             </div>
         </div>
         <!-- End -->
@@ -115,36 +115,36 @@
                 </h6>
 
                 <form class="needs-validation" novalidate>
-                <div class="form-group">
-                <input type="text" pattern="^https:\/\/[A-Za-z0-9\-]{1,61}\.github\.io\/.*$"
-                       class="form-control btn-block rounded-pill shadow" id="githubPage"
-                       placeholder="Enter Github Pages URL" data-error="Before you wreck yourself" required>
-                    <div class="invalid-feedback">
-                        Please enter an HTTPS github.io URL.
-                    </div>
+                    <div class="form-group">
+                        <input type="text" pattern="^https:\/\/[A-Za-z0-9\-]{1,61}\.github\.io\/.*$"
+                               class="form-control btn-block rounded-pill shadow" id="githubPage"
+                               placeholder="Enter Github Pages URL" data-error="Before you wreck yourself" required>
+                        <div class="invalid-feedback">
+                            Please enter an HTTPS github.io URL.
+                        </div>
 
-                <!-- End -->
-                </div>
+                        <!-- End -->
+                    </div>
                     <button onclick="" type="submit" class="btn btn-primary btn-block rounded-pill shadow">
                         Import
                     </button>
                 </form>
 
             </div>
-            </div>
-
         </div>
+
+    </div>
 </section>
 
 <script>
-    (function() {
+    (function () {
         'use strict';
-        window.addEventListener('load', function() {
+        window.addEventListener('load', function () {
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
             var forms = document.getElementsByClassName('needs-validation');
             // Loop over them and prevent submission
-            var validation = Array.prototype.filter.call(forms, function(form) {
-                form.addEventListener('submit', function(event) {
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
                     event.preventDefault();
                     event.stopPropagation();
                     if (form.checkValidity() === true) {
