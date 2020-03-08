@@ -18,13 +18,13 @@ In order to demonstrate the capability of our tool, we have create several proof
 
 ### Examples
 #### Basic Demo:
-Original Page: https://imcjohn.github.io/SkyPages/demos/simple_demo/ \\
+Original Page: https://imcjohn.github.io/SkyPages/demos/simple_demo/ \
 Siasky Link: https://siasky.net/AACaBCKg29AIXVDyci0YUAoChdI0niYUwx3SkbnUH6yBdA
 
 #### 2048:
-Original Page: https://hczhcz.github.io/2048/20ez/ \\
+Original Page: https://hczhcz.github.io/2048/20ez/ \
 Siasky Link: https://siasky.net/CAAl5W2XQYN3qlQRvIq5G8iz1Jf5jHDwstyWx_Rwd6CmLQ\
 
 #### SkyPages:
-Original Page: https://imcjohn.github.io/SkyPages/frontend/ \\
+Original Page: https://imcjohn.github.io/SkyPages/frontend/ \
 Siasky Link: https://siasky.net/CABMLShr4jkikvB15sd9cIP8LrfrmVePO24NzZE7lM5VTQ
