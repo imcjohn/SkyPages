@@ -17,10 +17,13 @@ function get_pages(url){
     let zip = new JSZip();
     if (url[url.length-1] != '/')
         url = url + '/'; // always end with fwd slash
+    chrome.runtime.sendMessage(
+        {itemId: 12345},
+        () => zip);
     return fetch(url, {
         method: "GET"
     }).then(response => response.text())
-        .then(response => multiFetch(url,zip,parseTraverse(url,toDom(response)))).then(() => zip);
+        .then(response => multiFetch(url,zip,parseTraverse(url,toDom(response)))).then(() => zip).catch(e => alert("Error occured: " + e));
 }
 
 /**
