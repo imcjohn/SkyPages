@@ -4,67 +4,45 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <link rel="stylesheet" type="text/css" href="load.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.2.2/jszip.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src = "bootbox.all.min.js"></script>
-    <script src = "ziphandler.js"></script>
-    <script src = "gitTraverse.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+    <script src="ziphandler.js" async></script>
+    <script src="gitTraverse.js" async></script>
+    <link rel="stylesheet" type="text/css"
+          href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <script>
         // code to handle github
-        let debounce = function(fun, mil){
-            let timer;
-            return function(){
-                clearTimeout(timer);
-                timer = setTimeout(function(){
-                    fun();
-                }, mil);
-            };
-        };
-        let checkUrl = function(url){
-            if (!url.startsWith('https://'))
-                return 'Please use an https GitHub Pages URL';
-            let chop = url.split('.');
-            if (!(chop[1] == 'github' && chop[2].startsWith('io'))){
-                return 'Sorry, this only supports Github Pages. Please enter a proper GitHub pages URL';
-            }
-            return 'ok';
-        };
-        let processBounced = function(){
+        function processImport() {
             let url = document.getElementById("githubPage").value;
-            let status = checkUrl(url);
-            if (status != 'ok'){
-                bootbox.alert(status);
-            }
             let zipPromise = get_pages(url);
             zipPromise.then(handleJZip);
-        };
-        let processImport = debounce(processBounced,50);
+        }
+
         // code to handle zip
-        let handleZip = function(element){
+        function handleZip(element) {
             let file = element.files[0];
             document.getElementsByTagName('label')[0].innerText = file.name;
-            if (!file.name.endsWith('.zip')){
+            if (!file.name.endsWith('.zip')) {
                 bootbox.alert("Please select a zip file");
             }
             let zipPromise = (new JSZip()).loadAsync(file);
             zipPromise.then(handleJZip);
-        };
-        let handleJZip = function(zip){
+        }
+
+        let handleJZip = function (zip) {
             $('#overlay').fadeIn();
             let promResult = handle_zip(zip);
             promResult.then(handleResult);
         };
         // general code
-        let handleResult = function(value){
+        let handleResult = function (value) {
             $('#overlay').fadeOut();
-            let other  = '';
-            let rawText = 'Primary Skylink: ' + value.skylink + '\nOther Skylinks:\n\t'
-            for (var each of value.dependencies){
+            let other = '';
+            let rawText = 'Primary Skylink: ' + value.skylink + '\nOther Skylinks:\n\t';
+            for (var each of value.dependencies) {
                 other = other + `<li><a href="${each}">${each}</a></li>`;
                 rawText = rawText + each + '\n\t';
             }
@@ -87,9 +65,9 @@
             </ol>
             <a download="skylinks.txt" href="data:application/octet-stream;base64,${b64}">Download skylinks as text</a>
             `;
-            bootbox.alert({message: result,size:"large",callback:closePage});
+            bootbox.alert({message: result, size: "large", callback: closePage});
         };
-        let closePage = function(){
+        let closePage = function () {
             location.reload();
         };
     </script>
@@ -106,7 +84,7 @@
         <!-- For demo purpose -->
         <div class="row mb-5 text-center text-white">
             <div class="col-lg-10 mx-auto">
-<!--                <img src="logo.png" width="200">-->
+                <img src="logo.png" width="50">
                 <h1 class="display-4">SkyPages</h1>
                 <p class="lead">Hosting your website in a secure, decentralized manner</p>
             </div>
@@ -124,7 +102,8 @@
                 </h6>
 
                 <div class="custom-file overflow-hidden rounded-pill mb-5">
-                    <input onchange="handleZip(this)" id="customFile" type="file" class="custom-file-input rounded-pill">
+                    <input onchange="handleZip(this)" id="customFile" type="file"
+                           class="custom-file-input rounded-pill" accept=".zip">
                     <label for="customFile" class="custom-file-label rounded-pill">Choose file</label>
                 </div>
                 <!-- End -->
@@ -135,16 +114,49 @@
                     Or import from GitHub pages:
                 </h6>
 
-                <!-- Custom bootstrap upload file-->
-                <input type="text" class="form-control btn-block rounded-pill shadow" id="githubPage" placeholder="Enter Github Pages URL">
-                <label onclick="processImport();" class="btn btn-primary btn-block rounded-pill shadow"><i class="fa fa-upload mr-2"></i>Import
-                </label>
-                <!-- End -->
+                <form class="needs-validation" novalidate>
+                <div class="form-group">
+                <input type="text" pattern="^https:\/\/[A-Za-z0-9\-]{1,61}\.github\.io\/.*$"
+                       class="form-control btn-block rounded-pill shadow" id="githubPage"
+                       placeholder="Enter Github Pages URL" data-error="Before you wreck yourself" required>
+                    <div class="invalid-feedback">
+                        Please enter an HTTPS github.io URL.
+                    </div>
 
+                <!-- End -->
+                </div>
+                    <button onclick="" type="submit" class="btn btn-primary btn-block rounded-pill shadow">
+                        Import
+                    </button>
+                </form>
+
+            </div>
             </div>
 
         </div>
 </section>
+
+<script>
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (form.checkValidity() === true) {
+                        processImport();
+                    } else {
+                        form.classList.add('was-validated');
+                    }
+                }, false);
+            });
+        }, false);
+    })();
+</script>
 
 </body>
 </html>

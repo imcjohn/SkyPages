@@ -3,7 +3,7 @@ const DOWNLOAD_URL = "https://siasky.net/";
 
 
 /**
- * Uploads a zip file of a website to siasky.net
+ * Uploads a zip file of a website to siasky.net.
  *
  * @param {{files: Object.<string, ZipObject>}} zip file of a single page website and its resources
  * @returns {Promise<never>|Promise<{skylink: string, dependencies: [string]}>} list
@@ -32,7 +32,7 @@ function handle_zip(zip) {
             return upload(blob, "index.html")
                 .then(arr => ({
                     skylink: DOWNLOAD_URL + arr[1],
-                    dependencies: Object.values(mapping)
+                    dependencies: Object.values(mapping).map(skylink => DOWNLOAD_URL + skylink)
                 }))
         })
 }
