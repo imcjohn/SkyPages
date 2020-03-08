@@ -1,7 +1,5 @@
-
-
 function handle_zip(zip) {
-    let html_files = Object.keys(zip.files).filter(file => file.endsWith(".html") && !file.includes("/"))
+    let html_files = Object.keys(zip.files).filter(file => file.endsWith(".html") && !file.includes("/"));
     if (html_files.length === 0) {
         return Promise.reject("No HTML file in root directory");
     } else if (html_files.length > 1) {
@@ -15,15 +13,15 @@ function handle_zip(zip) {
             return obj;
         }, {});
 
-    let promises = [upload_resources(resources), get_dom(zip, html_file)]
+    let promises = [upload_resources(resources), get_dom(zip, html_file)];
     return Promise.all(promises)
         .then(arr => {
-        let [mapping, dom] = arr;
-        return modify_html(dom, mapping)
-    })
-        .then(dom => dom.documentElement.innerHTML)
-        .then(string => new Blob([string], {type: "text/html"}))
+            let [mapping, dom] = arr;
+            return modify_html(dom, mapping);
+        })
+        .then(dom => new Blob([dom.documentElement.innerHTML], {type: "text/html"}))
         .then(blob => upload(blob, "index.html"))
+        .then(arr => arr[1]);
 }
 
 function modify_html(dom, mapping) {
@@ -93,6 +91,7 @@ function upload(blob, filename) {
 function upload_resources(resources) {
     return Promise.all(Object.entries(resources).map(arr => {
         let [filename, f] = arr;
-        return f.async("blob").then(b => upload(b, filename))})).then(Object.fromEntries);
+        return f.async("blob").then(b => upload(b, filename))
+    })).then(Object.fromEntries);
 }
 
