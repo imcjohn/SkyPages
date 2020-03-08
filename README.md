@@ -12,7 +12,19 @@ We keep the references relative still, though, so that if we can access the webp
 
 ### Why it's cool
 
-TODO: 
-Mention dogfooding with our service, get link to our thingy. Make some screenshots/gifs of it in action.
+While Sia, especially through the Skynet webportals, has always been an extremely powerful tool to share decentralized files in an efficent manner, there was evidently more room to improve in the relm of decentralized websites. Before our tool, uploading your website to Skynet would be an arduous process, as you whould have to upload files one-by-one, rewriting links as you go. Now, we have made the website upload as simple as a single button click, with all of the difficult work abstracted away by our Javascript libraries. 
 
-Linky here: https://siasky.net/CABMLShr4jkikvB15sd9cIP8LrfrmVePO24NzZE7lM5VTQ
+In order to demonstrate the capability of our tool, we have create several proof of concept websites, including a copy of SkyPages uploaded to the Skynet network!
+
+### Examples
+#### Basic Demo:
+Original Page: https://imcjohn.github.io/SkyPages/demos/simple_demo/
+Siasky Link: https://siasky.net/AACaBCKg29AIXVDyci0YUAoChdI0niYUwx3SkbnUH6yBdA
+
+#### 2048:
+Original Page: https://hczhcz.github.io/2048/20ez/
+Siasky Link: https://siasky.net/CAAl5W2XQYN3qlQRvIq5G8iz1Jf5jHDwstyWx_Rwd6CmLQ
+
+#### SkyPages:
+Original Page: https://imcjohn.github.io/SkyPages/frontend/
+Siasky Link: https://siasky.net/CABMLShr4jkikvB15sd9cIP8LrfrmVePO24NzZE7lM5VTQ
