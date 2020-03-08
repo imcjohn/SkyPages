@@ -5,9 +5,43 @@
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-    <script type="text/javascript" src="http://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src = "bootbox.all.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script>
+        let debounce = function(fun, mil){
+            let timer;
+            return function(){
+                clearTimeout(timer);
+                timer = setTimeout(function(){
+                    fun();
+                }, mil);
+            };
+        };
+
+        let checkUrl = function(url){
+            if (!url.startsWith('https://'))
+                return 'Please use an https GitHub Pages URL';
+            let chop = url.split('.');
+            console.log(chop);
+            if (!(chop[1] == 'github' && chop[2].startsWith('io'))){
+                return 'Sorry, this only supports Github Pages. Please enter a proper GitHub pages URL';
+            }
+            return 'ok';
+        };
+
+        let pi = function(){
+            let url = document.getElementById("githubPage").value;
+            let status = checkUrl(url);
+            if (status != 'ok'){
+                bootbox.alert(status);
+            }
+        };
+
+        let processImport = debounce(pi,50);
+    </script>
 
     <!--
     For browsersync, delete in prod
@@ -52,7 +86,7 @@
 
                 <!-- Custom bootstrap upload file-->
                 <input type="text" class="form-control btn-block rounded-pill shadow" id="githubPage" placeholder="Enter Github Pages URL">
-                <label for="fileUpload" class="btn btn-primary btn-block rounded-pill shadow"><i class="fa fa-upload mr-2"></i>Import
+                <label onclick="processImport();" class="btn btn-primary btn-block rounded-pill shadow"><i class="fa fa-upload mr-2"></i>Import
                 </label>
                 <!-- End -->
 
