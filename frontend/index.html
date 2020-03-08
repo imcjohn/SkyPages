@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.2.2/jszip.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src = "bootbox.all.min.js"></script>
+    <script src = "ziphandler.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -49,14 +51,15 @@
         // code to handle zip
         let handleZip = function(element){
             let file = element.files[0];
+            document.getElementsByTagName('label')[0].innerText = file.name;
             if (!file.name.endsWith('.zip')){
                 bootbox.alert("Please select a zip file");
             }
-            let prom = get_zip(element);
-            prom.then(handleJZip);
+            let zipPromise = (new JSZip()).loadAsync(file);
+            zipPromise.then(zip => handle_zip(zip)).then(handleResult);
         };
         let handleJZip = function(zip){
-            let promResult = upload_zip(zip);
+            let promResult = handle_zip(zip);
             promResult.then(handleResult);
         };
         // general code
