@@ -155,7 +155,7 @@
 
 
             let param = new URLSearchParams(window.location.search).get("page");
-            window.history.replaceState({}, "", "?")
+            window.history.replaceState({}, "", "?");
 
             if (param && param.match("^https:\/\/[A-Za-z0-9\-]{1,61}\.github\.io\/.*$")) {
                 processImport(param);

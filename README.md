@@ -1,9 +1,5 @@
 # SkyPages
-A simple tool to upload your webpages to skynet (for MIT Bitcoin Hackathon)
+A simple tool to upload webpages to Siacoin's Skynet, done as a part of MIT's 2020 Bitcoin Expo Hackathon.
 
-# Parts
-- Github pages import
-- Normal zip file import
-- Native WSISYG (if we have time)
-- Overarching, website -> sia uploader
-- Frontend
+### How it works:
+
