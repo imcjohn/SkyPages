@@ -55,10 +55,10 @@
                 Or import from GitHub pages:
             </h6>
 
-            <form class="needs-validation" novalidate>
+            <form id="githubForm" novalidate>
                 <div class="form-group">
                     <input type="text" pattern="^https:\/\/[A-Za-z0-9\-]{1,61}\.github\.io\/.*$"
-                           class="form-control btn-block rounded-pill shadow" id="githubPage"
+                           class="form-control btn-block rounded-pill shadow"
                            placeholder="Enter Github Pages URL" required>
                     <div class="invalid-feedback">
                         Please enter an HTTPS github.io URL.
@@ -82,8 +82,7 @@
         'use strict';
 
         // code to handle github
-        function processImport() {
-            let url = document.getElementById("githubPage").value;
+        function processImport(url) {
             let zipPromise = get_pages(url);
             zipPromise.then(handleJZip);
         }
@@ -137,24 +136,29 @@
 
         window.addEventListener('load', function () {
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            const forms = document.getElementsByClassName('needs-validation');
+            const form = document.getElementById('githubForm');
             const upload = document.getElementById("customFile");
 
             upload.addEventListener('change', function (event) {
                 handleZip(event.target);
             });
             // Loop over them and prevent submission
-            Array.prototype.filter.call(forms, function (form) {
-                form.addEventListener('submit', function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    if (form.checkValidity() === true) {
-                        processImport();
-                    } else {
-                        form.classList.add('was-validated');
-                    }
-                }, false);
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                if (form.checkValidity() === true) {
+                    processImport(form.elements[0].value);
+                } else {
+                    form.classList.add('was-validated');
+                }
             });
+
+
+            let param = new URLSearchParams(window.location.search).get("page");
+
+            if (param && param.match("^https:\/\/[A-Za-z0-9\-]{1,61}\.github\.io\/.*$")) {
+                processImport(param);
+            }
         }, false);
     })();
 </script>
