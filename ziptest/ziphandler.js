@@ -1,3 +1,13 @@
+const UPLOAD_URL = "https://siasky.net/skynet/skyfile/";
+const DOWNLOAD_URL = "https://siasky.net/";
+
+
+/**
+ * Uploads a zip file of a website to siasky.net
+ *
+ * @param {{files: Object.<string, ZipObject>}} zip file of a single page website and its resources
+ * @returns {Promise<never>|Promise<{skylink: string, dependencies: [string]}>} list
+ */
 function handle_zip(zip) {
     let html_files = Object.keys(zip.files).filter(file => file.endsWith(".html") && !file.includes("/"));
     if (html_files.length === 0) {
@@ -18,12 +28,12 @@ function handle_zip(zip) {
         .then(arr => {
             let [mapping, dom] = arr;
             modify_html(dom, mapping);
-            let blob = new Blob([dom.documentElement.innerHTML], {type: "text/html"})
+            let blob = new Blob([dom.documentElement.innerHTML], {type: "text/html"});
             return upload(blob, "index.html")
-                .then(arr => {
-                    return {skylink: arr[1],
-                        dependencies: Object.values(mapping)};
-                })
+                .then(arr => ({
+                    skylink: DOWNLOAD_URL + arr[1],
+                    dependencies: Object.values(mapping)
+                }))
         })
 }
 
@@ -70,6 +80,15 @@ function mimetype_lookup(filename) {
     return db[extension] || "application/octet-stream";
 }
 
+function generate_url(filename) {
+    let uuid = '';
+    const cs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < 16; i++) {
+        uuid += cs.charAt(Math.floor(Math.random() * cs.length));
+    }
+    return UPLOAD_URL + uuid + `?filename=${filename}`;
+}
+
 function upload(blob, filename) {
     blob = new Blob([blob], {
         type: mimetype_lookup(filename)
@@ -77,18 +96,12 @@ function upload(blob, filename) {
     const formData = new FormData();
     formData.append("file", blob);
 
-    let uuid = '';
-    const cs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < 16; i++) {
-        uuid += cs.charAt(Math.floor(Math.random() * cs.length));
-    }
-
-    return fetch(`https://siasky.net/skynet/skyfile/${uuid}?filename=${filename}`, {
+    return fetch(generate_url(filename), {
         method: "POST",
         body: formData
     })
         .then(response => response.json())
-        .then(json => [filename, `https://siasky.net/${json["skylink"]}`]);
+        .then(json => [filename, json["skylink"]]);
 }
 
 function upload_resources(resources) {
