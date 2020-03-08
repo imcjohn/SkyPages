@@ -155,9 +155,12 @@
 
 
             let param = new URLSearchParams(window.location.search).get("page");
+            window.history.replaceState({}, "", "?")
 
             if (param && param.match("^https:\/\/[A-Za-z0-9\-]{1,61}\.github\.io\/.*$")) {
                 processImport(param);
+            } else if (param) {
+                bootbox.alert("Invalid URL! The URL must be an HTTPS Github Pages URL.");
             }
         }, false);
     })();
