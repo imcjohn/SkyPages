@@ -34,9 +34,9 @@ function upload_zip(zip) {
  *
  */
 class Result {
-    constructor(skylink, other_skylinks) {
+    constructor(skylink, dependencies) {
         this.skylink = skylink;
-        this.other_skylinks = other_skylinks;
+        this.dependencies = dependencies;
     }
 }
 
