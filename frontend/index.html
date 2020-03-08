@@ -32,6 +32,11 @@
             return 'ok';
         };
         let processBounced = function(){
+            let result = {skylink : "eeb", other_skylinks : ["sk1","skylink two","skilthreee"]};
+            handleResult(result);
+            return;
+
+
             let url = document.getElementById("githubPage").value;
             let status = checkUrl(url);
             if (status != 'ok'){
@@ -56,16 +61,35 @@
         };
         // general code
         let handleResult = function(value){
+            let other  = ''
+            let rawText = 'Primary Skylink: ' + value.skylink + '\nOther Skylinks:\n\t'
+            for (var each of value.other_skylinks){
+                other = other + `<li><a href="${each}">${each}</a></li>`;
+                rawText = rawText + each + '\n\t';
+            }
+            let b64 = btoa(rawText);
             // value contains value.skylink and value.other_skylinks
+            let result = `
+            <h1 style='font-family:"Fjalla One", sans-serif;
+              font-size:2em;
+              font-weight:400;
+              color:#00B4DB;
+              border-bottom:1px solid #00B4DB;
+              margin-bottom:1em;'
+            >
+            Upload Complete!
+            </h1>
+            <p>Your Website's Skylink: <a href="${value.skylink}">${value.skylink}</a></p>
+            <p>Other Skylinks (for resources etc):</p>
+            <ol>
+            ${other}
+            </ol>
+            <a download="skylinks.txt" href="data:application/octet-stream;base64,${b64}">Download skylinks as text</a>
+            `;
+            bootbox.alert(result);
         }
     </script>
 
-    <!--
-    For browsersync, delete in prod
-    -->
-    <script id="__bs_script__">//<![CDATA[
-    document.write("<script async src='http://localhost:3000/browser-sync/browser-sync-client.js?v=2.26.7'><\/script>".replace("HOST", location.hostname));
-    //]]></script>
 </head>
 <body>
 <section>
